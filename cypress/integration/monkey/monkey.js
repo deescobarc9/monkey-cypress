@@ -285,11 +285,11 @@ function randHover(){
 function avPag(){
     let info = ""
     let prev = curY.valueOf()
-    if(curPageMaxY - curY >= viewportHeight){ 
-        if(curPageMaxY - (curY + viewportHeight) >= viewportHeight){
+    if(curPageMaxY - curY > viewportHeight){
+        if(curPageMaxY - (curY + viewportHeight) > viewportHeight){
             curY = curY + viewportHeight
             cy.scrollTo(curX, curY)
-        } 
+        }
         else{
             curY = curPageMaxY - viewportHeight
             cy.scrollTo(curX, curY)
@@ -327,13 +327,14 @@ function rePag(){
 function horizontalScrollFw(){
     let info = ""
     let prev = curX.valueOf()
-    if(curPageMaxX - curX >= viewportWidth){ 
-        if(curPageMaxX - (curX + viewportWidth) >= viewportWidth){
+    if(curPageMaxX - curX > viewportWidth){
+        if(curPageMaxX - (curX + viewportWidth) > viewportWidth){
             curX = curX + viewportWidth
             cy.scrollTo(curX, curY)
-        } 
-        else{
+        }
+        else if(curPageMaxX - viewportWidth > 0){
             curX = curPageMaxX - viewportWidth
+            cy.task("logCommand", { funtype: "Scroll event (horizontal fw)"+curX+" -- "+curY, info: info})
             cy.scrollTo(curX, curY)
             info += "Page limit reached! "
         }
@@ -509,6 +510,18 @@ function randomEvent(){
 
 var pending_events = [,,,,,] 
 
+function loginIfNeeded() {
+    cy.url().then((currentUrl) => {
+        cy.task('genericLog', {"message":`currentUrl: ${currentUrl}`});
+        if (currentUrl.includes('/signin')) { // Verifica si está en la página de inicio de sesión
+            cy.get('input[name="identification"]').type('davids_8899@hotmail.com', { log: false });
+            cy.get('input[name="password"]').type('39443950dE*', { log: false });
+            cy.get('button[type="submit"]').click();
+            cy.wait(1000); // Espera a que la página redireccione después del login
+        }
+    });
+}
+
 describe( `${appName} under monkeys`, function() {
     //Listener
     cy.on('uncaught:exception', (err)=>{
@@ -546,6 +559,7 @@ describe( `${appName} under monkeys`, function() {
                 curPageMaxX = Math.max( d.body.scrollWidth, d.body.offsetWidth, d.documentElement.clientWidth, d.documentElement.scrollWidth, d.documentElement.offsetWidth) - win.innerWidth
             })
             cy.wait(1000)
+            loginIfNeeded()
             //Add an event for each type of event in order to enter the else statement of randomEvent method
             for(let i = 0; i < events + 5; i++){
                 evtIndex++
