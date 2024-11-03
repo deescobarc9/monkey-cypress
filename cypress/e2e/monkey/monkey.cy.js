@@ -1,6 +1,7 @@
 //Import
 require('cypress-plugin-tab')
 var fs = require('fs')
+const {faker} = require("@faker-js/faker");
 
 console.log(Cypress.config())
 const url = Cypress.config('baseUrl') || "https://uniandes.edu.co/"
@@ -514,11 +515,19 @@ var pending_events = [,,,,,]
 function loginIfNeeded() {
     cy.url().then((currentUrl) => {
         cy.task('genericLog', {"message":`currentUrl: ${currentUrl}`});
-        if (currentUrl.includes('/signin')) { // Verifica si está en la página de inicio de sesión
-            cy.get('input[name="identification"]').type('davids_8899@hotmail.com', { log: false });
+        if (currentUrl.includes('/setup')) { // Verifica si está en la página de inicio de sesión
+            cy.get('input[name="blog-title"]').type(faker.lorem.words({min: 2, max: 4})); // Correo
+            cy.get('input[name="name"]').type(faker.person.fullName()); // Correo
+            cy.get('input[name="email"]').type('js.rodriguezm12345@uniandes.edu.co', { log: false });
             cy.get('input[name="password"]').type('39443950dE*', { log: false });
             cy.get('button[type="submit"]').click();
             cy.wait(1000); // Espera a que la página redireccione después del login
+        }
+        if (currentUrl.includes('/signin')) {
+            cy.get('input[name="identification"]').type('js.rodriguezm12345@uniandes.edu.co', { log: false });
+            cy.get('input[name="password"]').type('39443950dE*', { log: false });
+            cy.get('button[type="submit"]').click();
+            cy.wait(1000);
         }
     });
 }
