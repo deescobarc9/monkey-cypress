@@ -570,6 +570,7 @@ describe( `${appName} under monkeys`, function() {
             })
             cy.wait(1000)
             loginIfNeeded()
+            cy.visit(url)
             //Add an event for each type of event in order to enter the else statement of randomEvent method
             for(let i = 0; i < events + 5; i++){
                 evtIndex++
