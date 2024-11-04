@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "monkey": "./node_modules/.bin/cypress run --config-file ./monkey-config.json",
+    "monkey": "./node_modules/.bin/cypress run --spec ./cypress/e2e/monkey/monkey.cy.js",
     "smart-monkey": "./node_modules/.bin/cypress run --config-file ./smart-monkey-config.json"
   },
   "repository": {
